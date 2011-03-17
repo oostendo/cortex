@@ -1,0 +1,6 @@
+
+
+
+body { font-family:verdana, arial, sans-serif; font-size:12px; background-image: url(/frame/index); background-repeat:no-repeat; background-position:center top; background-attachment:fixed; /*-o-background-size: 100% 100%, auto; -moz-background-size: 100% 100%, auto; -webkit-background-size: 100% 100%, auto;*/ background-size: 100% , auto; }
+
+#histogram { position:absolute; bottom: 0; width: 500; height: 50}
