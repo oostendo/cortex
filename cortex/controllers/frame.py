@@ -1,18 +1,17 @@
 import logging
 import redis
 import json
+import freenect
+import cv
+import SimpleCV as scv
+import numpy as np
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
-
 from cortex.lib.base import BaseController, render
 
 log = logging.getLogger(__name__)
 rd = redis.Redis(host='localhost', port=6379, db=0)
-
-import freenect
-import cv
-import numpy as np
 
 class FrameController(BaseController):
 
@@ -21,25 +20,35 @@ class FrameController(BaseController):
     response.headers['Cache-Control'] = 'max-age=14400'
     response.headers['Pragma'] = ''
 
-    img = self._get_video() 
-    depth = self._get_depth()
-    size = cv.GetSize(img)
-    grey = cv.CreateImage(size, 8, 1)
-    r = cv.CreateImage(size, 8, 1)
-    g = cv.CreateImage(size, 8, 1)
-    b = cv.CreateImage(size, 8, 1)
-    cv.Split(img, b, g, r, None) 
-    cv.CvtColor(img, grey, cv.CV_BGR2GRAY)
-    (hist, bin_edges) = np.histogram(np.asarray(cv.GetMat(grey)), bins=50)
-    channel = cv.CreateImage(size, 8, 3)
-    cv.Merge(None, g, None, None, channel)
-    rd.set("histogram", json.dumps(hist.tolist()))
+    c = scv.Camera(0)
+    img = c.getImage()
+    b = img.getBitmap()
+
+    h = img.histogram()
+    rd.set("histogram", json.dumps(h))
+    img.save("/dev/shm/img1.jpg") 
+    image_file = open("/dev/shm/img1.jpg", 'r')
+    return image_file.read()
     
-    cv.SaveImage("/dev/shm/img1.jpg", grey)
+
+  def kinect(self):
+    response.headers['Content-type'] = 'image/jpeg'
+    response.headers['Cache-Control'] = 'max-age=14400'
+    response.headers['Pragma'] = ''
+
+    img = scv.Image(self._get_video())
+    depth = scv.Image(self._get_depth())
+    h = img.histogram()
+    rd.set("histogram", json.dumps(h))
+    
+    img.save("/dev/shm/img1.jpg") 
     image_file = open("/dev/shm/img1.jpg", 'r')
 
     return image_file.read()
 
+  def _hist(self, i):
+    (hist, bin_edges) = np.histogram(np.asarray(cv.GetMat(i)), bins=50)
+    rd.set("histogram", json.dumps(hist.tolist()))
 
   def _get_depth(self):
     return self._pretty_depth_cv(freenect.sync_get_depth()[0])
