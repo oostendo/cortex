@@ -46,17 +46,21 @@ cortex = new function Cortex() {  //Javascript Singleton
   data - initial data for widget
 */
 
-function Widget(canvas, dataurl, data) { 
-  this.canvas = canvas;
+function Widget(div, dataurl, data) { 
+  this.div = div;
   this.datafeed = cortex.datasource + dataurl;
   if (data && typeof(data) == "object") {
       this.data = data 
   }
 
-  this.render = function() { alert("hi"); }  //abstract -- implemented by instances
+  this.render = function() { alert("you need to extend widget"); }  //abstract -- implemented by instances
 
   this._dataCallback = function(data) {
-    this.data = jQuery.parseJSON(data);
+    if (typeof(data) == "string"){
+      this.data = jQuery.parseJSON(data);
+    } else {
+      this.data = data["GET"] 
+    }
     this.render();
   }
   this.refresh = function() {
@@ -66,6 +70,14 @@ function Widget(canvas, dataurl, data) {
       success: this._dataCallback});
   }
   this.shutdown = function() {
-    $("#"+this.canvas).hide();
+    $("#"+this.div).hide();
   }
+}
+
+function WidgetCanvas(div, dataurl, data) { 
+  this.inheiritFrom = Widget;
+  this.inheiritFrom(div, dataurl, data);
+
+  $("#" + this.div).html('<canvas id="'+div+'-canvas"></canvas>');
+  this.canvas = div + "-canvas";
 }

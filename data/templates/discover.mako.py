@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 5
-_modified_time = 1300159547.623498
+_modified_time = 1300811410.3089409
 _template_filename='/home/home/oostendo/dev/cortex/cortex/cortex/templates/discover.mako'
 _template_uri='/discover.mako'
 _template_cache=cache.Cache(__name__, _modified_time)
@@ -31,32 +31,35 @@ def render_body(context,**pageargs):
         # SOURCE LINE 11
         for css in c.stylesheets:
             # SOURCE LINE 12
-            __M_writer(u'          <style type="text/css" rel="stylesheet" href="')
+            __M_writer(u'          <link rel="stylesheet" type="text/css" rel="stylesheet" href="')
             __M_writer(escape(css))
-            __M_writer(u'"></style>\n')
+            __M_writer(u'" />\n')
             pass
         # SOURCE LINE 14
-        __M_writer(u'        <style type="text/css">\n\nbody { font-family:verdana, arial, sans-serif; font-size:12px; background-image: url(/frame/index); background-repeat:no-repeat; background-position:center top; background-attachment:fixed; /*-o-background-size: 100% 100%, auto; -moz-background-size: 100% 100%, auto; -webkit-background-size: 100% 100%, auto;*/ background-size: 100% , auto; }\n\n#histogram { position:absolute; bottom: 0; width: 500; height: 50}\n        </style>\n    </head>\n    <body>\n')
-        # SOURCE LINE 22
+        __M_writer(u'    </head>\n    <body>\n      <div class="widgetbox-wrapper">\n      <div class="widgetbox">\n')
+        # SOURCE LINE 18
         for w in c.widgets:
-            # SOURCE LINE 23
-            __M_writer(u'         <canvas id="')
+            # SOURCE LINE 19
+            __M_writer(u'         <h3><a href="#">')
             __M_writer(escape(w["id"]))
-            __M_writer(u'"></canvas>\n')
+            __M_writer(u'</a></h3>\n         <div class="widget" id="')
+            # SOURCE LINE 20
+            __M_writer(escape(w["id"]))
+            __M_writer(u'"></div>\n')
             pass
+        # SOURCE LINE 22
+        __M_writer(u'      </div>\n      </div>\n       <script type="text/javascript">\n')
         # SOURCE LINE 25
-        __M_writer(u'       <script type="text/javascript">\n')
-        # SOURCE LINE 26
         for w in c.widgets:
-            # SOURCE LINE 27
+            # SOURCE LINE 26
             __M_writer(u"           cortex.registerWidget('")
             __M_writer(escape(w["id"]))
             __M_writer(u"', ")
             __M_writer(w["constructor"] )
             __M_writer(u');\n')
             pass
-        # SOURCE LINE 29
-        __M_writer(u'\n         cortex.refresh();\n       </script>\n    </body>\n</html>\n')
+        # SOURCE LINE 28
+        __M_writer(u"\n$(function(){\n\n  $('.widgetbox-wrapper').dialog({\n    autoOpen: true,\n    maxWidth: 425,\n    maxHeight: 300,\n    height: 425,\n    position: ['left', 'bottom' ]\n \n  });\n\n  $('.widgetbox').accordion();\n\n  cortex.refresh();\n});\n\n\n       </script>\n    </body>\n</html>\n")
         return ''
     finally:
         context.caller_stack._pop_frame()

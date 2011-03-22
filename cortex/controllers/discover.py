@@ -22,10 +22,13 @@ class DiscoverController(BaseController):
           "/js/jquery-1.4.4.min.js",
           "/js/jquery-ui-1.8.10.custom.min.js",
           "/js/cortex/cortex.js",
-          "/js/cortex/histogram.js"] 
+          "/js/cortex/histogram.js",
+          "/js/cortex/debuglog.js"] 
 
-        c.widgets = [ { "id": "histogram", "constructor": "new Histogram('histogram', '/GET/histogram.txt')" } ]
+        c.widgets = [ { "id": "histogram", "constructor": "new Histogram('histogram', '/GET/histogram.txt')" },
+        {"id": "debuglog", "constructor": "new DebugLog('debuglog', '/GET/debuglog.json')" } ]
 
+        rd.append("debuglog", "\ndiscover controller called")
         return render('/discover.mako')
         # or, return a string
         #return 'Hello World'

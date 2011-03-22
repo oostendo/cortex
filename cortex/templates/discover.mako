@@ -9,25 +9,40 @@
           <script type="text/javascript" src="${js}"></script> 
         % endfor
         % for css in c.stylesheets:
-          <style type="text/css" rel="stylesheet" href="${css}"></style>
+          <link rel="stylesheet" type="text/css" rel="stylesheet" href="${css}" />
         % endfor
-        <style type="text/css">
-
-body { font-family:verdana, arial, sans-serif; font-size:12px; background-image: url(/frame/index); background-repeat:no-repeat; background-position:center top; background-attachment:fixed; /*-o-background-size: 100% 100%, auto; -moz-background-size: 100% 100%, auto; -webkit-background-size: 100% 100%, auto;*/ background-size: 100% , auto; }
-
-#histogram { position:absolute; bottom: 0; width: 500; height: 50}
-        </style>
     </head>
     <body>
+      <div class="widgetbox-wrapper">
+      <div class="widgetbox">
        % for w in c.widgets:
-         <canvas id="${w["id"]}"></canvas>
+         <h3><a href="#">${w["id"]}</a></h3>
+         <div class="widget" id="${w["id"]}"></div>
        % endfor
+      </div>
+      </div>
        <script type="text/javascript">
          % for w in c.widgets:
            cortex.registerWidget('${w["id"]}', ${w["constructor"] | n});
          % endfor
 
-         cortex.refresh();
+$(function(){
+
+  $('.widgetbox-wrapper').dialog({
+    autoOpen: true,
+    maxWidth: 425,
+    maxHeight: 300,
+    height: 425,
+    position: ['left', 'bottom' ]
+ 
+  });
+
+  $('.widgetbox').accordion();
+
+  cortex.refresh();
+});
+
+
        </script>
     </body>
 </html>
