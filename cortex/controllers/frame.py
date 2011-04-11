@@ -20,7 +20,7 @@ class FrameController(BaseController):
     response.headers['Cache-Control'] = 'max-age=14400'
     response.headers['Pragma'] = ''
 
-    c = scv.Camera()
+    c = scv.Camera(0)
     img = c.getImage()
 
     h = img.histogram()
